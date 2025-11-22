@@ -1,0 +1,110 @@
+@page "{tableId:int}"
+@model RestaurantManager.Pages.Orders.DetailModel
+@{
+    ViewData["Title"] = $"Table {Model.Table.TableNumber}";
+}
+
+<div class="order-container">
+    <div class="menu-section">
+        <h2>Menu</h2>
+        <div class="categories">
+            @foreach (var category in Model.Categories)
+            {
+                <h3>@category.CategoryName</h3>
+                <div class="product-grid">
+                    @foreach (var product in category.Products)
+                    {
+                        <div class="product-card" 
+                             hx-post="@Url.Page("Detail", "AddItem", new { tableId = Model.TableId, productId = product.ProductId })"
+                             hx-target="#order-summary"
+                             hx-swap="innerHTML">
+                            <div class="product-name">@product.ProductName</div>
+                            <div class="product-price">$@product.Cost</div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="order-section">
+        <h2>Order #@(Model.CurrentOrder?.OrderId ?? 0)</h2>
+        
+        @if (Model.CurrentOrder == null)
+        {
+            <div class="empty-state">
+                <p>Table is available.</p>
+                <form method="post" asp-page-handler="CreateOrder">
+                    <button class="btn btn-primary btn-lg">Start Order</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div id="order-summary">
+                <partial name="_OrderSummary" model="Model" />
+            </div>
+            
+            <form method="post" asp-page-handler="PayOrder" class="mt-4">
+                <button class="btn btn-success btn-lg w-100 mb-2">Pay & Close ($@Model.CurrentOrder.TotalFee)</button>
+                <a asp-page="Index" class="btn btn-secondary btn-lg w-100">Back to Tables</a>
+            </form>
+        }
+    </div>
+</div>
+
+
+
+<style>
+    .order-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        height: calc(100vh - 100px);
+    }
+
+    .menu-section {
+        overflow-y: auto;
+        padding-right: 1rem;
+    }
+
+    .order-section {
+        background-color: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .product-card {
+        background-color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: transform 0.1s;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+    }
+
+    .product-card:active {
+        transform: scale(0.95);
+    }
+
+    .product-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .product-price {
+        color: #64748b;
+    }
+
+    /* Dark mode adjustments if needed, but sticking to clean light for now or using site.css vars */
+</style>

@@ -1,0 +1,43 @@
+@page
+@model RestaurantManager.Pages.Inventory.IndexModel
+@{
+    ViewData["Title"] = "Inventory";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Inventory Management</h1>
+    <a asp-page="Create" class="btn btn-primary">Add New Item</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Count</th>
+                    <th>Cost</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InventoryItems)
+                {
+                    <tr>
+                        <td>@item.ItemName</td>
+                        <td>
+                            <span class="badge @(item.ItemCount < 10 ? "bg-danger" : "bg-success")">
+                                @item.ItemCount
+                            </span>
+                        </td>
+                        <td>$@item.ItemCost</td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@item.ItemId" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a asp-page="./Delete" asp-route-id="@item.ItemId" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

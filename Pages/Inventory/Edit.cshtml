@@ -1,0 +1,39 @@
+@page
+@model RestaurantManager.Pages.Inventory.EditModel
+@{
+    ViewData["Title"] = "Edit Inventory Item";
+}
+
+<h1>Edit Inventory Item</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Inventory.ItemId" />
+            <div class="form-group mb-3">
+                <label asp-for="Inventory.ItemName" class="control-label"></label>
+                <input asp-for="Inventory.ItemName" class="form-control" />
+                <span asp-validation-for="Inventory.ItemName" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Inventory.ItemCount" class="control-label"></label>
+                <input asp-for="Inventory.ItemCount" class="form-control" />
+                <span asp-validation-for="Inventory.ItemCount" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Inventory.ItemCost" class="control-label"></label>
+                <input asp-for="Inventory.ItemCost" class="form-control" />
+                <span asp-validation-for="Inventory.ItemCost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,32 @@
+@model RestaurantManager.Pages.Orders.DetailModel
+
+@if (Model.CurrentOrder != null)
+{
+    <div class="order-items">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CurrentOrder.OrderItems)
+                {
+                    <tr>
+                        <td>@item.Product?.ProductName</td>
+                        <td>@item.Count</td>
+                        <td>$@item.SubTotal</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td colspan="2">Total</td>
+                    <td>$@Model.CurrentOrder.TotalFee</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}

@@ -1,0 +1,62 @@
+@page
+@model RestaurantManager.Pages.Orders.IndexModel
+@{
+    ViewData["Title"] = "Tables";
+}
+
+<h1>Tables</h1>
+
+<div class="table-grid">
+    @foreach (var table in Model.Tables)
+    {
+        <a asp-page="./Detail" asp-route-tableId="@table.TableId" class="table-card @(table.IsOccupied ? "occupied" : "available")">
+            <div class="table-number">@table.TableNumber</div>
+            <div class="table-status">@(table.IsOccupied ? "Occupied" : "Available")</div>
+        </a>
+    }
+</div>
+
+<style>
+    .table-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .table-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 150px;
+        border-radius: 1rem;
+        text-decoration: none;
+        color: white;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .available {
+        background-color: #10b981; /* Emerald 500 */
+    }
+
+    .occupied {
+        background-color: #ef4444; /* Red 500 */
+    }
+
+    .table-number {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .table-status {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+</style>

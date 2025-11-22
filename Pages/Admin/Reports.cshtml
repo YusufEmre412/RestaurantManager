@@ -1,0 +1,55 @@
+@page
+@model RestaurantManager.Pages.Admin.ReportsModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h1>Sales Reports</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Total Sales</h3>
+                <p class="display-4">$@Model.TotalSales</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3>Total Orders</h3>
+                <p class="display-4">@Model.TotalOrders</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Recent Orders</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Table</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.RecentOrders)
+        {
+            <tr>
+                <td>#@order.OrderId</td>
+                <td>@order.Table?.TableNumber</td>
+                <td>@order.CreatedAt.ToLocalTime().ToString("g")</td>
+                <td>$@order.TotalFee</td>
+                <td>
+                    <span class="badge @(order.IsPaid ? "bg-success" : "bg-warning")">
+                        @(order.IsPaid ? "Paid" : "Open")
+                    </span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

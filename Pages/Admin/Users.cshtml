@@ -1,0 +1,40 @@
+@page
+@model RestaurantManager.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1>User Management</h1>
+
+<p>
+    <a asp-page="CreateUser" class="btn btn-primary">Add New User</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.UserProfile?.Name</td>
+                <td>
+                    @foreach (var role in await Model.GetRolesAsync(user))
+                    {
+                        <span class="badge">@role</span>
+                    }
+                </td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-secondary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
