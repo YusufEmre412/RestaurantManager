@@ -16,6 +16,7 @@ namespace RestaurantManager.Models
         public Category? Category { get; set; }
         
         public ProductInfo? ProductInfo { get; set; }
+        public List<ProductIngredient> Ingredients { get; set; } = new();
     }
 
     public class Category
@@ -33,9 +34,11 @@ namespace RestaurantManager.Models
         public int ProductId { get; set; }
         public Product? Product { get; set; }
         
+        
         // Linking to Inventory Item if this product consumes inventory
-        public int? ItemId { get; set; }
-        public Inventory? InventoryItem { get; set; }
+        // public int? ItemId { get; set; }
+        // public Inventory? InventoryItem { get; set; }
+        
         
         public string Description { get; set; } = string.Empty;
     }
@@ -49,6 +52,7 @@ namespace RestaurantManager.Models
         
         [Column(TypeName = "decimal(18,2)")]
         public decimal ItemCost { get; set; }
+        public List<ProductIngredient> ProductIngredients { get; set; } = new();
     }
     
     public class Table

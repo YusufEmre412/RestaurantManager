@@ -249,4 +249,5 @@ C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\bin\Debug\net10.0\r
 C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\bin\Debug\net10.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\bin\Debug\net10.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\bin\Debug\net10.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\obj\Debug\net10.0\compressed\i5h2laqouq-{0}-ok408hawdd-ok408hawdd.gz
+C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\obj\Debug\net10.0\RestaurantManager.sourcelink.json
+C:\Users\yusuf\.gemini\antigravity\scratch\RestaurantManager\obj\Debug\net10.0\compressed\i5h2laqouq-{0}-sh17d7q8y9-sh17d7q8y9.gz

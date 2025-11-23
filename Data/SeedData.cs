@@ -110,6 +110,59 @@ namespace RestaurantManager.Data
                 await dbContext.Products.AddRangeAsync(products);
                 await dbContext.SaveChangesAsync();
             }
+
+            // Seed Inventory
+            var inventoryItems = new List<Inventory>
+            {
+                new Inventory { ItemName = "Hamburger Bun", ItemCount = 100, ItemCost = 0.50m },
+                new Inventory { ItemName = "Hamburger Meat", ItemCount = 100, ItemCost = 2.00m },
+                new Inventory { ItemName = "Lettuce", ItemCount = 50, ItemCost = 0.20m },
+                new Inventory { ItemName = "Tomato", ItemCount = 50, ItemCost = 0.30m },
+                new Inventory { ItemName = "Pickles", ItemCount = 50, ItemCost = 0.10m },
+                new Inventory { ItemName = "Cheese", ItemCount = 50, ItemCost = 0.50m }
+            };
+
+            foreach (var item in inventoryItems)
+            {
+                if (!await dbContext.Inventories.AnyAsync(i => i.ItemName == item.ItemName))
+                {
+                    dbContext.Inventories.Add(item);
+                }
+            }
+            await dbContext.SaveChangesAsync();
+
+            // Seed System Config
+            if (!await dbContext.SystemConfigs.AnyAsync())
+            {
+                dbContext.SystemConfigs.Add(new SystemConfig { Key = "IsRegisterOpen", Value = "True" });
+                await dbContext.SaveChangesAsync();
+            }
+
+            // Seed Product Ingredients (Link Burger to Ingredients)
+            var burger = await dbContext.Products.FirstOrDefaultAsync(p => p.ProductName == "Burger");
+            if (burger != null)
+            {
+                // Ensure ingredients are linked
+                var ingredientsToLink = new List<string> { "Hamburger Bun", "Hamburger Meat", "Lettuce", "Tomato" };
+                
+                foreach (var ingName in ingredientsToLink)
+                {
+                    var inventoryItem = await dbContext.Inventories.FirstOrDefaultAsync(i => i.ItemName == ingName);
+                    if (inventoryItem != null)
+                    {
+                        if (!await dbContext.ProductIngredients.AnyAsync(pi => pi.ProductId == burger.ProductId && pi.IngredientId == inventoryItem.ItemId))
+                        {
+                            dbContext.ProductIngredients.Add(new ProductIngredient 
+                            { 
+                                ProductId = burger.ProductId, 
+                                IngredientId = inventoryItem.ItemId, 
+                                Quantity = 1 
+                            });
+                        }
+                    }
+                }
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

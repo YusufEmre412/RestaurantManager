@@ -8,7 +8,7 @@
 
 <div class="row mb-4">
     <div class="col-md-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-body text-center">
                 <h3>Total Sales</h3>
                 <p class="display-4">$@Model.TotalSales</p>
@@ -16,14 +16,44 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card">
+        <div class="card h-100">
             <div class="card-body text-center">
                 <h3>Total Orders</h3>
                 <p class="display-4">@Model.TotalOrders</p>
             </div>
         </div>
     </div>
+<div class="col-md-4">
+    <div class="card h-100">
+        <div class="card-body d-flex align-items-center justify-content-center">
+            <a asp-page="/Admin/MonthlyReport" class="btn btn-primary w-100">Monthly Analysis</a>
+        </div>
+    </div>
 </div>
+</div>
+
+<h3>Daily Sales History</h3>
+@* Daily Sales History Table *@
+<table class="table table-striped mb-5">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Total Revenue</th>
+            <th>Total Orders</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var day in Model.DailySales)
+        {
+            <tr>
+                <td>@day.Date.ToLocalTime().ToShortDateString()</td>
+                <td>$@day.TotalRevenue</td>
+                <td>@day.TotalOrders</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 
 <h3>Recent Orders</h3>
 <table class="table">

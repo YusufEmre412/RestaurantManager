@@ -1,13 +1,27 @@
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using RestaurantManager.Models
+@using RestaurantManager.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext Context
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+    var userId = UserManager.GetUserId(User);
+    var userName = User.Identity?.Name;
+    if (userId != null)
+    {
+        var userProfile = await Context.UserProfiles.FirstOrDefaultAsync(up => up.UserId == userId);
+        if (userProfile != null && !string.IsNullOrEmpty(userProfile.Name))
+        {
+            userName = userProfile.Name;
+        }
+    }
+
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @userName!</a>
     </li>
     <li class="nav-item">
         <form class="form-inline" asp-page="/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">

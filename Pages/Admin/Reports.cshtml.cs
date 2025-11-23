@@ -20,6 +20,15 @@ namespace RestaurantManager.Pages.Admin
         public int TotalOrders { get; set; }
         public IList<Order> RecentOrders { get; set; } = new List<Order>();
 
+        public class DailySalesSummary
+        {
+            public DateTime Date { get; set; }
+            public decimal TotalRevenue { get; set; }
+            public int TotalOrders { get; set; }
+        }
+
+        public IList<DailySalesSummary> DailySales { get; set; } = new List<DailySalesSummary>();
+
         public async Task OnGetAsync()
         {
             TotalSales = await _context.Orders
@@ -33,6 +42,22 @@ namespace RestaurantManager.Pages.Admin
                 .OrderByDescending(o => o.CreatedAt)
                 .Take(10)
                 .ToListAsync();
+
+            // Calculate Daily Sales
+            var allPaidOrders = await _context.Orders
+                .Where(o => o.IsPaid)
+                .ToListAsync();
+
+            DailySales = allPaidOrders
+                .GroupBy(o => o.CreatedAt.Date)
+                .Select(g => new DailySalesSummary
+                {
+                    Date = g.Key,
+                    TotalRevenue = g.Sum(o => o.TotalFee),
+                    TotalOrders = g.Count()
+                })
+                .OrderByDescending(d => d.Date)
+                .ToList();
         }
     }
 }

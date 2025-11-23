@@ -19,6 +19,8 @@ namespace RestaurantManager.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductInfo> ProductInfos { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
+        public DbSet<ProductIngredient> ProductIngredients { get; set; }
+        public DbSet<SystemConfig> SystemConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -35,6 +37,20 @@ namespace RestaurantManager.Data
                 .HasOne(p => p.ProductInfo)
                 .WithOne(i => i.Product)
                 .HasForeignKey<ProductInfo>(i => i.ProductId);
+
+            // Configure ProductIngredient composite key
+            builder.Entity<ProductIngredient>()
+                .HasKey(pi => new { pi.ProductId, pi.IngredientId });
+
+            builder.Entity<ProductIngredient>()
+                .HasOne(pi => pi.Product)
+                .WithMany(p => p.Ingredients)
+                .HasForeignKey(pi => pi.ProductId);
+
+            builder.Entity<ProductIngredient>()
+                .HasOne(pi => pi.Inventory)
+                .WithMany(i => i.ProductIngredients)
+                .HasForeignKey(pi => pi.IngredientId);
         }
     }
 }

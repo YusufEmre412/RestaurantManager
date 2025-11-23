@@ -1,0 +1,101 @@
+@page
+@model RestaurantManager.Pages.Admin.EndOfDayModel
+@{
+    ViewData["Title"] = "End of Day Summary";
+}
+
+<h1>End of Day Summary</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Total Revenue</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalRevenue.ToString("C")</h5>
+                @if (Model.SessionStart.HasValue)
+                {
+                    <small class="text-white-50">Since @Model.SessionStart.Value.ToLocalTime().ToString("t")</small>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Total Orders</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalOrders</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Total Items Sold</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalItemsSold</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h3>Item Sales Breakdown</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity Sold</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ItemSales)
+                {
+                    <tr>
+                        <td>@item.Key</td>
+                        <td>@item.Value</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<h3>Today's Receipts</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Table</th>
+            <th>Time</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.TodayOrders)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.TableId</td>
+                <td>@order.CreatedAt.ToLocalTime().ToString("t")</td>
+                <td>@order.TotalFee.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <button class="btn btn-primary" onclick="window.print()">Print Summary</button>
+    
+    <form method="post" asp-page-handler="ToggleRegister" class="d-inline">
+        @if (Model.IsRegisterOpen)
+        {
+            <button type="submit" class="btn btn-danger" asp-route-action="close" onclick="return confirm('Are you sure you want to close the register?');">Close Register</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-success" asp-route-action="open">Open Register</button>
+        }
+    </form>
+
+    <a asp-page="/Index" class="btn btn-secondary">Back to Home</a>
+</div>

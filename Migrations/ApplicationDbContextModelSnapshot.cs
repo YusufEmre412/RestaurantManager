@@ -358,23 +358,47 @@ namespace RestaurantManager.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("InventoryItemItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ItemId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductInfoId");
 
-                    b.HasIndex("InventoryItemItemId");
-
                     b.HasIndex("ProductId")
                         .IsUnique();
 
                     b.ToTable("ProductInfos");
+                });
+
+            modelBuilder.Entity("RestaurantManager.Models.ProductIngredient", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "IngredientId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("ProductIngredients");
+                });
+
+            modelBuilder.Entity("RestaurantManager.Models.SystemConfig", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("SystemConfigs");
                 });
 
             modelBuilder.Entity("RestaurantManager.Models.Table", b =>
@@ -526,17 +550,30 @@ namespace RestaurantManager.Migrations
 
             modelBuilder.Entity("RestaurantManager.Models.ProductInfo", b =>
                 {
-                    b.HasOne("RestaurantManager.Models.Inventory", "InventoryItem")
-                        .WithMany()
-                        .HasForeignKey("InventoryItemItemId");
-
                     b.HasOne("RestaurantManager.Models.Product", "Product")
                         .WithOne("ProductInfo")
                         .HasForeignKey("RestaurantManager.Models.ProductInfo", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("InventoryItem");
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("RestaurantManager.Models.ProductIngredient", b =>
+                {
+                    b.HasOne("RestaurantManager.Models.Inventory", "Inventory")
+                        .WithMany("ProductIngredients")
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RestaurantManager.Models.Product", "Product")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inventory");
 
                     b.Navigation("Product");
                 });
@@ -562,6 +599,11 @@ namespace RestaurantManager.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("RestaurantManager.Models.Inventory", b =>
+                {
+                    b.Navigation("ProductIngredients");
+                });
+
             modelBuilder.Entity("RestaurantManager.Models.Order", b =>
                 {
                     b.Navigation("OrderItems");
@@ -569,6 +611,8 @@ namespace RestaurantManager.Migrations
 
             modelBuilder.Entity("RestaurantManager.Models.Product", b =>
                 {
+                    b.Navigation("Ingredients");
+
                     b.Navigation("ProductInfo");
                 });
 #pragma warning restore 612, 618

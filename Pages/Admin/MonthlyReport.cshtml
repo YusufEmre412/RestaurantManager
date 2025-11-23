@@ -1,0 +1,64 @@
+@page
+@model RestaurantManager.Pages.Admin.MonthlyReportModel
+@{
+    ViewData["Title"] = "Monthly Sales Report";
+}
+<h1>Monthly Sales Report</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Total Revenue</th>
+            <th>Total Orders</th>
+            <th>Total Items Sold</th>
+            <th>Total Ingredients Used</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var month in Model.MonthlySummaries)
+        {
+            var monthId = "m" + month.Month.ToString("yyyyMM");
+            <tr>
+                <td>
+                    <button class="btn btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#@monthId" aria-expanded="false" aria-controls="@monthId">
+                        @month.Month.ToString("yyyy-MM")
+                    </button>
+                </td>
+                <td>$@month.TotalRevenue</td>
+                <td>@month.TotalOrders</td>
+                <td>@month.TotalItemsSold</td>
+                <td>@month.TotalIngredientsUsed</td>
+            </tr>
+            <tr class="collapse" id="@monthId">
+                <td colspan="5">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Menu Items Sold</h6>
+                            <ul class="list-group">
+                                @foreach (var item in month.ItemSales)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        @item.Key
+                                        <span class="badge bg-primary rounded-pill">@item.Value</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Ingredients Used</h6>
+                            <ul class="list-group">
+                                @foreach (var ing in month.IngredientUsage)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        @ing.Key
+                                        <span class="badge bg-secondary rounded-pill">@ing.Value</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

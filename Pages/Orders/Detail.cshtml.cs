@@ -50,6 +50,13 @@ namespace RestaurantManager.Pages.Orders
             var table = await _context.Tables.FindAsync(TableId);
             if (table == null) return NotFound();
 
+            var config = await _context.SystemConfigs.FindAsync("IsRegisterOpen");
+            if (config != null && !bool.Parse(config.Value))
+            {
+                // Register is closed
+                return RedirectToPage();
+            }
+
             if (table.IsOccupied) return RedirectToPage(); // Already has order?
 
             var order = new Order
@@ -74,8 +81,35 @@ namespace RestaurantManager.Pages.Orders
 
             if (order == null) return BadRequest("No active order");
 
-            var product = await _context.Products.FindAsync(productId);
+            var config = await _context.SystemConfigs.FindAsync("IsRegisterOpen");
+            if (config != null && !bool.Parse(config.Value))
+            {
+                return BadRequest("Register is closed");
+            }
+
+            var product = await _context.Products
+                .Include(p => p.Ingredients)
+                .ThenInclude(pi => pi.Inventory)
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+
             if (product == null) return BadRequest("Product not found");
+
+            // Check inventory
+            foreach (var ing in product.Ingredients)
+            {
+                if (ing.Inventory.ItemCount < ing.Quantity)
+                {
+                    // For now, return a simple error message. 
+                    // Ideally, this should be handled gracefully in the UI.
+                    return StatusCode(400, $"Out of stock: {ing.Inventory.ItemName}");
+                }
+            }
+
+            // Deduct inventory
+            foreach (var ing in product.Ingredients)
+            {
+                ing.Inventory.ItemCount -= ing.Quantity;
+            }
 
             var existingItem = order.OrderItems.FirstOrDefault(i => i.ProductId == productId);
             if (existingItem != null)
